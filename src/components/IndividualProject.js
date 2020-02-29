@@ -19,13 +19,15 @@ export const IndividualProject = ({ project }) => {
             setSelectedProject('INBOX');
          });
       };
+   console.log(showConfirm);
    return (
       <>
          <span className="sidebar__dot">•</span>
          <span className="sidebar__project-name">{project.name}</span>
          <span className="sidebar__project-delete"
                data-testid="delete-project"
-               onClick={() => setShowConfirm(!showConfirm)}>
+               onClick={() => setShowConfirm(!showConfirm)}
+               >
                <FaTrashAlt />
                {showConfirm && (
                   <div className="project-delete-modal">
