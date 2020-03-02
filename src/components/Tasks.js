@@ -5,11 +5,22 @@ import { useTasks } from '../hooks';
 import { collatedTasks } from '../constants';
 import { getTitle, getCollatedTitle, collatedTasksExist } from '../helpers';
 import { useSelectedProjectValue, useProjectsValue } from '../context';
+import { FaTrashAlt } from 'react-icons/fa';
+import { firebase } from '../firebase';
 
 export const Tasks = () => {
    const { selectedProject } = useSelectedProjectValue();
    const { projects } = useProjectsValue();
-   const { tasks } = useTasks(selectedProject);
+   const { tasks, archivedTasks } = useTasks(selectedProject);
+   const [showConfirm, setShowConfirm] = useState(false);
+
+   const deleteTask = docId => {
+      firebase
+         .firestore()
+         .collection('tasks')
+         .doc(docId)
+         .delete();
+      };
 
    let projectName = '';
 
@@ -27,7 +38,8 @@ export const Tasks = () => {
       document.title = `${projectName}: Todoist`;
    });
 
-   console.log(tasks)
+   console.log(tasks);
+   console.log(archivedTasks);
    return (
       <div className="tasks" data-testid="tasks">
          <h2 data-test-id="project-name">{projectName}</h2>
@@ -41,6 +53,13 @@ export const Tasks = () => {
          </ul>
 
          <AddTask />
+         <ul className="tasks__list archived">
+            {archivedTasks.map(task=> (
+               <li key={`${task.id}`}>
+                  <span>{task.task}</span>
+               </li>
+            ))}
+         </ul>
       </div>
    )
 }
